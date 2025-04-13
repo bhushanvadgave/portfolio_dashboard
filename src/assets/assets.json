@@ -1,0 +1,104 @@
+{
+    "assets":{
+        "tata_steel":{
+            "name":"Tata Steel",
+            "asset_type":"stock"
+        },
+        "reliance_industries":{
+            "name":"Reliance Industries",
+            "asset_type":"stock"
+        },
+        "adani_enterprises":{
+            "name":"Adani Enterprises",
+            "asset_type":"stock"
+        },
+        "asian_paints":{
+            "name":"Asian Paints",
+            "asset_type":"stock"
+        },
+        "bharti_airtel":{
+            "name":"Bharti Airtel",
+            "asset_type":"stock"
+        },
+        "bajaj_finserv":{
+            "name":"Bajaj Finserv",
+            "asset_type":"stock"
+        },
+        "hdfc_bank":{
+            "name":"HDFC Bank",
+            "asset_type":"stock"
+        },
+        "infosys":{
+            "name":"Infosys",
+            "asset_type":"stock"
+        },
+        "itc":{
+            "name":"ITC",
+            "asset_type":"stock"
+        },
+        "hero_moto_corps":{
+            "name":"Hero MotoCorp",
+            "asset_type":"stock"
+        },
+        "mahindra_and_mahindra":{
+            "name":"Mahindra & Mahindra",
+            "asset_type":"stock"
+        },
+        "parag_parikh":{
+            "name":"Parag Parikh Flexi Cap Fund",
+            "asset_type":"mutual_fund"
+        },
+        "nippon_india_growth_fund":{
+            "name":"Nippon India Growth Fund",
+            "asset_type":"mutual_fund"
+        },
+        "nippon_india_small_cap_fund":{
+            "name":"Nippon India Small Cap Fund",
+            "asset_type":"mutual_fund"
+        },
+        "dsp_elss_tax_saver_fund":{
+            "name":"DSP ELSS Tax Saver Fund",
+            "asset_type":"mutual_fund"
+        },
+        "nippon_india_multi_cap_fund":{
+            "name":"Nippon India Multi Cap Fund",
+            "asset_type":"mutual_fund"
+        },
+        "quant_multi_cap_fund":{
+            "name":"Quant Multi Cap Fund",
+            "asset_type":"mutual_fund"
+        },
+        "physical_gold":{
+            "name":"Physical Gold",
+            "asset_type":"gold"
+        },
+        "sgb":{
+            "name":"SGB",
+            "asset_type":"gold"
+        },
+        "mumbai_house":{
+            "name":"Mumbai House",
+            "asset_type":"real_estate"
+        },
+        "pune_commercial_property":{
+            "name":"Pune Commercial Property",
+            "asset_type":"real_estate"
+        },
+        "kotak_bank_fd1":{
+            "name":"Kotak Bank FD 1",
+            "asset_type":"fd"
+        },
+        "kotak_bank_fd2":{
+            "name":"Kotak Bank FD 2",
+            "asset_type":"fd"
+        },  
+        "bitcoin":{
+            "name":"Bitcoin",
+            "asset_type":"crypto"
+        },
+        "ethereum":{
+            "name":"Ethereum",
+            "asset_type":"crypto"
+        }
+    }
+}

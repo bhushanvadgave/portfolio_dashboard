@@ -1,0 +1,34 @@
+{
+    "asset_types": {
+        "stock": {
+            "name": "Stock",
+            "icon": "/assets/stock.png",
+            "color": "#FF0000"
+        },
+        "gold": {
+            "name": "Gold",
+            "icon": "/assets/gold.png",
+            "color": "#FFD700"
+        },
+        "crypto": {
+            "name": "Crypto",
+            "icon": "/assets/crypto.png",
+            "color": "#000000"
+        },
+        "fd": {
+            "name": "Fixed Deposit",
+            "icon": "/assets/fd.png",
+            "color": "#000000"
+        },
+        "mutual_fund": {
+            "name": "Mutual Fund",
+            "icon": "/assets/mutual_fund.png",
+            "color": "#000000"
+        },
+        "real_estate": {
+            "name": "Real Estate",
+            "icon": "/assets/real_estate.png",
+            "color": "#000000"
+        }
+    }
+}

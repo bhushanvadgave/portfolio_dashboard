@@ -1,0 +1,137 @@
+{
+    "tata_steel": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "reliance_industries": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "adani_enterprises": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "asian_paints": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "bharti_airtel": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "bajaj_finserv": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "hdfc_bank": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "infosys": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "itc": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "hero_moto_corps": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "mahindra_and_mahindra": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "parag_parikh": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "kotak_parikh": {
+        "priceHistory": [
+            {}
+        ]
+    },
+    "icici_prudential_value_fund": {
+        "priceHistory": [
+            {}
+        ]
+    },
+    "nippon_india_growth_fund": {
+        "priceHistory": [
+            {}
+        ]
+    },
+    "physical_gold": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "mumbai_house": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    },
+    "bitcoin": {
+        "priceHistory": [
+            {
+                "date": "2021-01-01",
+                "price": 100.00
+            }
+        ]
+    }
+}
