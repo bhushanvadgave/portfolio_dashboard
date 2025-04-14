@@ -4,17 +4,17 @@ import { formatValue, formatDecimal, formatValue2} from '../../utils/Utils';
 
 function DashboardCard07() {
 
-  const { getTopPerformingAssets } = useStore();
+  const { getTopPerformingAssets, startDate, activeDay } = useStore();
   const [topPerformingAssets, setTopPerformingAssets] = useState([]);
 
   useEffect(() => {
     const fetchTopPerformingAssets = async () => {
-      const assets = await getTopPerformingAssets(new Date('2000-01-01'), new Date(), 'returnPercentage');
+      const assets = await getTopPerformingAssets(startDate, activeDay, 'returnPercentage');
       console.log("assets", assets);
       setTopPerformingAssets(assets.filter(asset => asset.returnPercentage > 0).slice(0, 10));
     };
     fetchTopPerformingAssets();
-  }, []);
+  }, [startDate, activeDay]);
 
   return (
     <div className="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-xs rounded-xl">

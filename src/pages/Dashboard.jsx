@@ -77,7 +77,7 @@ function Dashboard() {
 
             {/* Cards */}
             {/* <div className="flex justify-between items-start"> */}
-            <div className="grid grid-cols-16 gap-4">
+            <div className="grid grid-cols-16 gap-6">
 
               {/* Line chart (Acme Plus) */}
               <DashboardCard01 />

@@ -12,12 +12,12 @@ function DashboardCard01() {
 
   const [totalInvestmentAmount, setTotalInvestmentAmount] = useState(0);
   const [totalInvestmentValue, setTotalInvestmentValue] = useState(0);
-  const { getTotalInvestmentAmount, getTotalInvestmentValue, getMonthlyTotalInvestmentAmount, getMonthlyTotalInvestmentValue } = useStore();
+  const { getTotalInvestmentAmount, getTotalInvestmentValue, getMonthlyTotalInvestmentAmount, getMonthlyTotalInvestmentValue, startDate, activeDay } = useStore();
   const [chartData, setChartData] = useState();
 
   useEffect(() => {
     const fetchTotalInvestmentAmount = async () => {
-      const amount = await getTotalInvestmentAmount('2000-01-01', new Date());
+      const amount = await getTotalInvestmentAmount(startDate, activeDay);
       console.log("Total Investment Amount", amount);
       setTotalInvestmentAmount(amount);
     };
@@ -25,7 +25,7 @@ function DashboardCard01() {
     // setTotalInvestmentAmount(234525);
 
     const fetchTotalInvestmentValue = async () => {
-      const value = await getTotalInvestmentValue('2000-01-01', new Date());
+      const value = await getTotalInvestmentValue(startDate, activeDay);
       console.log("Total Investment Value", value);
       setTotalInvestmentValue(value);
     };
@@ -86,7 +86,7 @@ function DashboardCard01() {
     };
     populateChartData();
 
-  }, []);
+  }, [startDate, activeDay]);
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-4 xl:col-span-4 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl">

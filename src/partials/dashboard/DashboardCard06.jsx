@@ -7,13 +7,13 @@ import { getCssVariable } from '../../utils/Utils';
 
 function DashboardCard06() {
 
-  const { getAssetAllocationPercentage, getAssetType} = useStore();
+  const { getAssetAllocationPercentage, getAssetType, startDate, activeDay } = useStore();
 
   const [chartData, setChartData] = useState();
 
   useEffect(() => {
     const fetchAssetAllocation = async () => {
-      const assetAllocation = await getAssetAllocationPercentage('2000-01-01', new Date());
+      const assetAllocation = await getAssetAllocationPercentage(startDate, activeDay);
       console.log(assetAllocation);
 
       const chartData = {
@@ -37,7 +37,7 @@ function DashboardCard06() {
       setChartData(chartData);
     };
     fetchAssetAllocation();
-  }, []);
+  }, [startDate, activeDay]);
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">

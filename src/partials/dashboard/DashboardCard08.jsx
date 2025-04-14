@@ -8,14 +8,14 @@ import { getCssVariable } from '../../utils/Utils';
 function DashboardCard08() {
 
 
-  const { getMonthlyReturnPercentageByAssetType, getMonthYearList, getAssetType} = useStore();
+  const { getMonthlyReturnPercentageByAssetType, getMonthYearList, getAssetType, startDate, activeDay } = useStore();
   const [chartData, setChartData] = useState();
 
  useEffect(() => {
   const populateChartData = async () => {
-    const data = await getMonthlyReturnPercentageByAssetType(new Date('2015-01-01'), new Date());
+    const data = await getMonthlyReturnPercentageByAssetType(startDate, activeDay);
     console.log("monthly return percentage by asset type", data);
-    const monthYearList = await getMonthYearList(new Date('2015-01-01'), new Date());
+    const monthYearList = await getMonthYearList(startDate, activeDay);
     console.log("month year list", monthYearList);
     const chartData = {
       labels: monthYearList,
@@ -41,7 +41,7 @@ function DashboardCard08() {
     setChartData(chartData);
   };
   populateChartData();
- }, []);
+ }, [startDate, activeDay]);
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">

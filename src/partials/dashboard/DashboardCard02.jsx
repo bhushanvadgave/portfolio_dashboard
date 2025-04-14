@@ -10,7 +10,7 @@ import { formatValue, formatDecimal } from '../../utils/Utils';
 
 function DashboardCard02() {
 
-  const { getTotalReturnAmount, getTotalReturnPercentage, getMonthlyTotalReturnPercentage, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage } = useStore();
+  const { getTotalReturnAmount, getTotalReturnPercentage, getMonthlyTotalReturnPercentage, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage, startDate, activeDay } = useStore();
   const [totalReturnAmount, setTotalReturnAmount] = useState(0);
   const [totalReturnPercentage, setTotalReturnPercentage] = useState(0);
   const [todaysReturnAmount, setTodaysReturnAmount] = useState(0);
@@ -19,33 +19,33 @@ function DashboardCard02() {
 
   useEffect(() => {
     const fetchTotalReturnAmount = async () => {
-      const amount = await getTotalReturnAmount(new Date('2000-01-01'), new Date());
+      const amount = await getTotalReturnAmount(startDate, activeDay);
       setTotalReturnAmount(amount);
     };
     fetchTotalReturnAmount();
 
     const fetchTotalReturnPercentage = async () => {
-      const percentage = await getTotalReturnPercentage(new Date('2000-01-01'), new Date());
+      const percentage = await getTotalReturnPercentage(startDate, activeDay);
       setTotalReturnPercentage(percentage);
     };
     fetchTotalReturnPercentage();
 
     const fetchTodaysReturnAmount = async () => {
-      const amount = await getTodaysTotalReturnAmount(new Date('2000-01-01'), new Date());
+      const amount = await getTodaysTotalReturnAmount(startDate, activeDay);
       setTodaysReturnAmount(amount);
       console.log("Todays Return Amount", amount);
     };
     fetchTodaysReturnAmount();
 
     const fetchTodaysReturnPercentage = async () => {
-      const percentage = await getTodaysTotalReturnPercentage(new Date('2000-01-01'), new Date());
+      const percentage = await getTodaysTotalReturnPercentage(startDate, activeDay);
       setTodaysReturnPercentage(percentage);
       console.log("Todays Return Percentage", percentage);
     };
     fetchTodaysReturnPercentage();
 
     const populateChartData = async () => {
-      const monthlyReturnPercentages = await getMonthlyTotalReturnPercentage(new Date('2000-01-01'), new Date());
+      const monthlyReturnPercentages = await getMonthlyTotalReturnPercentage(startDate, activeDay);
 
       const chartData = {
         labels: Object.keys(monthlyReturnPercentages),
@@ -79,7 +79,7 @@ function DashboardCard02() {
       setChartData(chartData);
     }
     populateChartData();
-  }, []);
+  }, [startDate, activeDay]);
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-4 xl:col-span-4 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl">

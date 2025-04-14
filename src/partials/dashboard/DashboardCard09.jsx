@@ -9,13 +9,13 @@ function DashboardCard09() {
 
 
 
-  const { getTotalReturnPercentageByAssetType, getAssetType} = useStore();
+  const { getTotalReturnPercentageByAssetType, getAssetType, startDate, activeDay } = useStore();
   // const [totalReturnPercentageByAssetType, setTotalReturnPercentageByAssetType] = useState({});
   const [chartData, setChartData] = useState();
 
   useEffect(() => {
     const populateChartData = async () => {
-      const data = await getTotalReturnPercentageByAssetType('2000-01-01', new Date());
+      const data = await getTotalReturnPercentageByAssetType(startDate, activeDay);
       console.log("Total Return Percentage By Asset Type", data);
       // setTotalReturnPercentageByAssetType(data);
       const chartData = {
@@ -55,7 +55,7 @@ function DashboardCard09() {
       setChartData(chartData);
     };
     populateChartData();
-  }, []);
+  }, [startDate, activeDay]);
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
