@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useEffect } from "react"
 import { addDays, format } from "date-fns"
 
 import { cn } from "../lib/utils"
@@ -10,14 +11,38 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./ui/popover"
+import useStore from "../store"
+import { HandPlatter } from "lucide-react"
 
 export default function DatePickerWithRange({
   className,
 }) {
+  const { startDate, activeDay, investmentStartDate, updateActiveDayAndStartDate } = useStore();
   const [date, setDate] = React.useState({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
+    from: startDate,
+    to: activeDay,
   })
+
+  useEffect(() => {
+    console.log("date changed: ", date);
+    updateActiveDayAndStartDate(date.from, date.to);
+    // if (date.from && date.to) {
+    //   document.body.click(); // This will close the popover by clicking outside
+    // }
+  }, [date])
+
+    useEffect(() => {
+      console.log("startDate: ", startDate);
+      console.log("activeDay: ", activeDay);
+      setDate({
+        from: startDate,
+        to: activeDay,
+      })
+  },[startDate, activeDay])
+
+  // function handleDateChange(datechange) {
+  //   console.log("datechange", datechange);
+  // }
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -38,7 +63,7 @@ export default function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
+                  {startDate==investmentStartDate ? "Beginning" : format(date.from, "LLL dd, y")} -{" "}
                   {format(date.to, "LLL dd, y")}
                 </>
               ) : (

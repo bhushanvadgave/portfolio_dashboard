@@ -3,32 +3,32 @@
         "stock": {
             "name": "Stock",
             "icon": "/assets/stock.png",
-            "color": "#FF0000"
+            "color": "pink"
         },
         "gold": {
             "name": "Gold",
             "icon": "/assets/gold.png",
-            "color": "#FFD700"
+            "color": "yellow"
         },
         "crypto": {
             "name": "Crypto",
             "icon": "/assets/crypto.png",
-            "color": "#000000"
+            "color": "teal"
         },
         "fd": {
             "name": "Fixed Deposit",
             "icon": "/assets/fd.png",
-            "color": "#000000"
+            "color": "indigo"
         },
         "mutual_fund": {
             "name": "Mutual Fund",
             "icon": "/assets/mutual_fund.png",
-            "color": "#000000"
+            "color": "orange"
         },
         "real_estate": {
             "name": "Real Estate",
             "icon": "/assets/real_estate.png",
-            "color": "#000000"
+            "color": "purple"
         }
     }
 }

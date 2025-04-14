@@ -29,7 +29,7 @@ function DoughnutChart({
       type: 'doughnut',
       data: data,
       options: {
-        cutout: '80%',
+        cutout: '65%',
         layout: {
           padding: 24,
         },

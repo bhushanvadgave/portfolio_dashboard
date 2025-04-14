@@ -6,9 +6,8 @@ import {
   Chart, LineController, LineElement, Filler, PointElement, LinearScale, TimeScale, Tooltip,
 } from 'chart.js';
 import 'chartjs-adapter-moment';
-
 // Import utilities
-import { formatValue } from '../utils/Utils';
+import { formatValue, formatDecimal} from '../utils/Utils';
 
 Chart.register(LineController, LineElement, Filler, PointElement, LinearScale, TimeScale, Tooltip);
 
@@ -43,7 +42,7 @@ function LineChart02({
             beginAtZero: true,
             ticks: {
               maxTicksLimit: 5,
-              callback: (value) => formatValue(value),
+              callback: (value) => formatDecimal(value)+"%",
               color: darkMode ? textColor.dark : textColor.light,
             },
             grid: {
@@ -53,10 +52,10 @@ function LineChart02({
           x: {
             type: 'time',
             time: {
-              parser: 'MM-DD-YYYY',
+              parser: 'YYYY-MM',
               unit: 'month',
               displayFormats: {
-                month: 'MMM YY',
+                month: 'MMM YYYY',
               },
             },
             border: {
@@ -79,7 +78,7 @@ function LineChart02({
           tooltip: {
             callbacks: {
               title: () => false, // Disable tooltip title
-              label: (context) => formatValue(context.parsed.y),
+              label: (context) => formatDecimal(context.parsed.y)+"%",
             },
             bodyColor: darkMode ? tooltipBodyColor.dark : tooltipBodyColor.light,
             backgroundColor: darkMode ? tooltipBgColor.dark : tooltipBgColor.light,
@@ -172,11 +171,11 @@ function LineChart02({
     <React.Fragment>
       <div className="px-5 py-3">
         <div className="flex flex-wrap justify-between items-end gap-y-2 gap-x-4">
-          <div className="flex items-start">
+          {/* <div className="flex items-start">
             <div className="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">$1,482</div>
             <div className="text-sm font-medium text-red-700 px-1.5 bg-red-500/20 rounded-full">-22%</div>
-          </div>
-          <div className="grow mb-1">
+          </div> */}
+          <div className="flex items-start">
             <ul ref={legend} className="flex flex-wrap gap-x-4 sm:justify-end"></ul>
           </div>
         </div>

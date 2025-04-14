@@ -39,7 +39,7 @@ function Dashboard() {
     <div className="flex h-screen overflow-hidden">
 
       {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
 
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -61,52 +61,62 @@ function Dashboard() {
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
                 {/* Filter button */}
-                <FilterButton align="right" />
+                {/* <FilterButton align="right" /> */}
                 {/* Datepicker built with React Day Picker */}
                 <Datepicker align="right" />
                 {/* Add view button */}
-                <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
+                {/* <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
                   <svg className="fill-current shrink-0 xs:hidden" width="16" height="16" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
                   </svg>
                   <span className="max-xs:sr-only">Add View</span>
-                </button>                
+                </button>                 */}
               </div>
 
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-12 gap-6">
+            {/* <div className="flex justify-between items-start"> */}
+            <div className="grid grid-cols-16 gap-4">
 
               {/* Line chart (Acme Plus) */}
               <DashboardCard01 />
               {/* Line chart (Acme Advanced) */}
               <DashboardCard02 />
+
+              <DashboardCard02 />
+
+              <DashboardCard03 />
               {/* Doughnut chart (Top Countries) */}
                  <DashboardCard06 />
-              {/* Line chart (Acme Professional) */}
-              <DashboardCard03 />
+                 <DashboardCard09 />
+              
               {/* Bar chart (Direct vs Indirect) */}
-              <DashboardCard04 />
+              {/* <DashboardCard04 /> */}
               {/* Line chart (Real Time Value) */}
-              <DashboardCard05 />
+              {/* <DashboardCard05 /> */}
            
-              {/* Table (Top Channels) */}
-              <DashboardCard07 />
+             
               {/* Line chart (Sales Over Time) */}
               <DashboardCard08 />
+               {/* Table (Top Channels) */}
+               <DashboardCard07 />
               {/* Stacked bar chart (Sales VS Refunds) */}
-              <DashboardCard09 />
+              
               {/* Card (Customers) */}
-              <DashboardCard10 />
+              {/* <DashboardCard10 /> */}
               {/* Card (Reasons for Refunds) */}
-              <DashboardCard11 />
+              {/* <DashboardCard11 /> */}
               {/* Card (Recent Activity) */}
-              <DashboardCard12 />
+              {/* <DashboardCard12 /> */}
               {/* Card (Income/Expenses) */}
-              <DashboardCard13 />
+              {/* <DashboardCard13 /> */}
               
             </div>
+            {/* <div className="grid grid-cols-4 gap-6">
+            <DashboardCard03 />
+            </div> */}
+            {/* </div> */}
 
           </div>}
         </main>

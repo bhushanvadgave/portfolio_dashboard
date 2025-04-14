@@ -5,10 +5,24 @@ export const formatValue = (value) => Intl.NumberFormat('en-IN', {
   notation: 'compact',
 }).format(value);
 
-export const formatDecimal = (value) => Intl.NumberFormat('en-IN', {
+export const formatValue2 = (value) => Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  // notation: 'standard',
+  // roundingMode: 'ceil',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+}).format(value);
+
+export const formatDecimal = (value, removeSign = false) => Intl.NumberFormat('en-IN', {
   maximumSignificantDigits: 3,
   notation: 'compact',
-}).format(value);
+}).format(removeSign ? Math.abs(value) : value);
+
+export const formatDecimal2 = (value, removeSign = false) => Intl.NumberFormat('en-IN', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+}).format(removeSign ? Math.abs(value) : value);
 
 export const formatThousands = (value) => Intl.NumberFormat('en-IN', {
   maximumSignificantDigits: 3,
