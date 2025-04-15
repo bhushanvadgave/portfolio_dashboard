@@ -22,9 +22,12 @@ export default function DatePickerWithRange({
     from: startDate,
     to: activeDay,
   })
-
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
   useEffect(() => {
-    console.log("date changed: ", date);
+    console.log("----", activeDay.getTime(), today.getTime(), startDate.getTime(), investmentStartDate.getTime(), activeDay==today);
+    // console.log("date changed: ", date);
     updateActiveDayAndStartDate(date.from, date.to);
     // if (date.from && date.to) {
     //   document.body.click(); // This will close the popover by clicking outside
@@ -32,8 +35,8 @@ export default function DatePickerWithRange({
   }, [date])
 
     useEffect(() => {
-      console.log("startDate: ", startDate);
-      console.log("activeDay: ", activeDay);
+      // console.log("startDate: ", startDate);
+      // console.log("activeDay: ", activeDay);
       setDate({
         from: startDate,
         to: activeDay,
@@ -63,8 +66,8 @@ export default function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {startDate==investmentStartDate ? "Beginning" : format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {startDate.getTime()==investmentStartDate.getTime() ? "Beginning" : format(date.from, "LLL dd, y")} -{" "}
+                  {activeDay.getTime()==today.getTime() ? "Today" : format(date.to, "LLL dd, y")}
                 </>
               ) : (
                 format(date.from, "LLL dd, y")

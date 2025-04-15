@@ -104,7 +104,7 @@ function LineChart02({
             }
             // Reuse the built-in legendItems generator
             const items = c.options.plugins.legend.labels.generateLabels(c);
-            items.slice(0, 2).forEach((item) => {
+            items.forEach((item) => {
               const li = document.createElement('li');
               // Button element
               const button = document.createElement('button');
@@ -144,7 +144,7 @@ function LineChart02({
     setChart(newChart);
     return () => newChart.destroy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (!chart) return;

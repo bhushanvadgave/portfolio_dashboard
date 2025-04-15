@@ -6,18 +6,30 @@ import EditMenu from '../../components/DropdownEditMenu';
 import Timeline from '../../charts/Timeline';
 // Import utilities
 import { adjustColorOpacity, getCssVariable } from '../../utils/Utils';
+import useStore from '../../store';
 
 function DashboardCard03() {
 
-  const [highlights, setHighlights] = useState([{
-    date: '2017-01-01',
-    highlightName: 'Highlight 1',
-    description: 'Description 1',
-    icon: '🌟'
-  }]);
+  const {investmentStartDate, activeDay} = useStore();
+  const [highlights, setHighlights] = useState([
+    {
+    date: '2021-01-01',
+    highlightName: 'Hig edfs asdsa asfa asf',
+    description: 'Description 1  sdfds  sdfdsfs sdfsdfsfsfdfs sdfsfsfsfs sdfsfs dfsafs',
+    icon: 'star',
+    iconColor: 'yellow-400'
+  },
+  {
+    date: '2021-05-12',
+    highlightName: 'Hig edfs asdsa asfa asf 2',
+    description: 'Description 1  sdfds  sdfdsfs sdfsdfsfsfdfs sdfsfsfsfs sdfsfs dfsafs',
+    icon: 'star',
+    iconColor: 'violet-400'
+  }
+]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-4 xl:col-span-4 bg-white dark:bg-gray-800 row-span-3 shadow-xs rounded-xl">
+    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white dark:bg-gray-800 row-span-3 shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className="px-5 pt-5">
         <header className="flex justify-between items-start mb-2">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Time Travel</h2>
@@ -41,7 +53,7 @@ function DashboardCard03() {
           </EditMenu> */}
         </header>
             <div className="grow">
-              <Timeline startDate={new Date('2015-01-01')} endDate={new Date()} highlights={highlights}/>
+              <Timeline startDate={investmentStartDate} endDate={new Date()} highlights={highlights}/>
             </div>
         {/* <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Sales</div>
         <div className="flex items-start">

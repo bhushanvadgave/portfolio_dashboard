@@ -1,9 +1,30 @@
-export const formatValue = (value) => Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  maximumSignificantDigits: 3,
-  notation: 'compact',
-}).format(value);
+export const formatValue = (value) => {
+  if(value === 0 || value === null || value === undefined) {
+    return "₹0";
+  }
+  const absValue = Math.abs(value);
+  let formattedValue;
+
+  if (absValue >= 10000000) { // For crores (≥1Cr)
+    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 10000000).toFixed(2)}Cr`;
+  } else if (absValue >= 100000) { // For lakhs (≥1L)
+    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 100000).toFixed(2)}L`;
+  } else if (absValue >= 1000) { // For thousands (≥1K)
+    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 1000).toFixed(2)}K`;
+  } else { // For values less than 1000
+    formattedValue = `${value<0 ? "-" : ""}₹${absValue.toFixed(2)}`;
+  }
+
+  return formattedValue;
+};
+
+// export const formatValue = (value) => Intl.NumberFormat('en-IN', {
+//   style: 'currency',
+//   currency: 'INR',
+//   maximumSignificantDigits: 3,
+//   style: 'compact',
+//   notation: 'compact',
+// }).format(value);
 
 export const formatValue2 = (value) => Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -15,8 +36,9 @@ export const formatValue2 = (value) => Intl.NumberFormat('en-IN', {
 }).format(value);
 
 export const formatDecimal = (value, removeSign = false) => Intl.NumberFormat('en-IN', {
-  maximumSignificantDigits: 3,
+  maximumSignificantDigits: 2,
   notation: 'compact',
+  maximumFractionDigits:2
 }).format(removeSign ? Math.abs(value) : value);
 
 export const formatDecimal2 = (value, removeSign = false) => Intl.NumberFormat('en-IN', {

@@ -92,8 +92,8 @@ function BarChart02({
           x: {
             stacked: true,
             type: 'linear',
-            min: Math.min(...data.datasets[0].data)-3,
-            max: Math.max(...data.datasets[0].data)+3,
+            min: Math.min(...data.datasets[0].data)-10,
+            max: Math.max(...data.datasets[0].data)+10,
             // grace: 5,
             // time: {
             //   parser: 'YYYY-MM',
@@ -161,7 +161,7 @@ function BarChart02({
     setChart(newChart);
     return () => newChart.destroy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (!chart) return;

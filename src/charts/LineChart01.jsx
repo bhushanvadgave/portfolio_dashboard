@@ -73,7 +73,7 @@ function LineChart01({
     setChart(newChart);
     return () => newChart.destroy();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (!chart) return;

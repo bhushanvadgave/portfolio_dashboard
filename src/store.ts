@@ -2,7 +2,10 @@ import { create } from 'zustand';
 import { assets } from "./assets/assets.json"
 import { asset_types } from "./assets/asset_types.json"
 import Papa from 'papaparse';
-import { format } from 'date-fns';
+import { format, isSameDay, differenceInDays} from 'date-fns';
+
+const PIVOT_ACTIVE_DATE = new Date('2025-04-10');
+PIVOT_ACTIVE_DATE.setHours(0, 0, 0, 0);
 
 //   let cachedTransactions: any[] | null = null;
 //   let cachedPriceHistory: any[] | null = null;
@@ -23,9 +26,13 @@ const useStore = create((set, get) => ({
   },
 
   prepareData: async () => {
-    const [investmentTransactions, assetPriceHistory] = await Promise.all([loadTransactions(), loadPriceHistory()]);
+    const assetPriceHistory = await loadPriceHistory();
+    const investmentTransactions = await loadTransactions(assetPriceHistory);
     const firstDateOfInvestment = investmentTransactions[0].date;
-    set({ investmentTransactions, assetPriceHistory, startDate: firstDateOfInvestment, investmentStartDate: firstDateOfInvestment });
+    firstDateOfInvestment.setHours(0, 0, 0, 0);
+    const actDay = new Date();
+    actDay.setHours(0, 0, 0, 0);
+    set({ investmentTransactions, assetPriceHistory, startDate: firstDateOfInvestment, investmentStartDate: firstDateOfInvestment, activeDay: actDay });
   },
 
   // setCurrentDate: async (starDate: Date, endDate: Date) => {
@@ -154,39 +161,39 @@ const useStore = create((set, get) => ({
     }
   },
 
-  async getTotalReturnAmount(startDate: string | Date, endDate: string | Date): Promise<number> {
+  async getTotalReturnAmount(startDate: string | Date, endDate: string | Date, assetType?: string, assetId?: string): Promise<number> {
     const { getTotalInvestmentAmount, getTotalInvestmentValue } = get() as any;
-    const totalInvestmentAmount = await getTotalInvestmentAmount(startDate, endDate);
-    const totalInvestmentValue = await getTotalInvestmentValue(startDate, endDate);
+    const totalInvestmentAmount = await getTotalInvestmentAmount(startDate, endDate, assetType, assetId);
+    const totalInvestmentValue = await getTotalInvestmentValue(startDate, endDate, assetType, assetId);
     return totalInvestmentValue - totalInvestmentAmount;
   },
 
-  async getTotalReturnPercentage(startDate: string | Date, endDate: string | Date): Promise<number> {
+  async getTotalReturnPercentage(startDate: string | Date, endDate: string | Date, assetType?: string, assetId?: string): Promise<number> {
     const { getTotalInvestmentAmount, getTotalInvestmentValue } = get() as any;
-    const totalInvestmentAmount = await getTotalInvestmentAmount(startDate, endDate);
-    const totalInvestmentValue = await getTotalInvestmentValue(startDate, endDate);
+    const totalInvestmentAmount = await getTotalInvestmentAmount(startDate, endDate, assetType, assetId);
+    const totalInvestmentValue = await getTotalInvestmentValue(startDate, endDate, assetType, assetId);
     return totalInvestmentAmount > 0 ? ((totalInvestmentValue - totalInvestmentAmount) / totalInvestmentAmount) * 100 : 0;
   },
 
-  async getTodaysTotalReturnAmount(startDt: string | Date, endDt: string | Date): Promise<number> {
+  async getTodaysTotalReturnAmount(startDt: string | Date, endDt: string | Date, assetType?: string, assetId?: string): Promise<number> {
     const { getTotalReturnAmount } = get() as any;
     const startDate = new Date(startDt);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(endDt);
     endDate.setHours(0, 0, 0, 0);
-    const totalReturnAmount = await getTotalReturnAmount(startDate, endDate);
+    const totalReturnAmount = await getTotalReturnAmount(startDate, endDate, assetType, assetId);
     const yesterday = new Date(endDate);
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayReturnAmount = await getTotalReturnAmount(startDate, yesterday);
+    const yesterdayReturnAmount = await getTotalReturnAmount(startDate, yesterday, assetType, assetId);
     return totalReturnAmount - yesterdayReturnAmount;
   },
 
-  async getTodaysTotalReturnPercentage(startDt: string | Date, endDt: string | Date): Promise<number> {
+  async getTodaysTotalReturnPercentage(startDt: string | Date, endDt: string | Date, assetType?: string, assetId?: string): Promise<number> {
     const { getTodaysTotalReturnAmount, getTotalReturnAmount } = get() as any;
-    const todaysReturnAmount = await getTodaysTotalReturnAmount(startDt, endDt);
+    const todaysReturnAmount = await getTodaysTotalReturnAmount(startDt, endDt, assetType, assetId);
     const yesterday = new Date(endDt);
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayReturnAmount = await getTotalReturnAmount(startDt, yesterday);
+    const yesterdayReturnAmount = await getTotalReturnAmount(startDt, yesterday, assetType, assetId);
     return yesterdayReturnAmount > 0 ? (todaysReturnAmount / yesterdayReturnAmount) * 100 : 0;
   },
 
@@ -268,7 +275,7 @@ const useStore = create((set, get) => ({
         const currentMonth = currentMonthDate.getMonth();
         const currentYear = currentMonthDate.getFullYear();
 
-        if (currentMonthDate >= transactionDate || (currentYear === transactionYear && currentMonth === transactionMonth)) {
+        if (currentMonthDate.getTime() >= transactionDate.getTime() || (currentYear === transactionYear && currentMonth === transactionMonth)) {
           const assetId = transaction.asset_id;
           acc[monthKey] = acc[monthKey] || {};
           acc[monthKey][assetId] = (acc[monthKey][assetId] || 0) + (transaction.quantity || 0);
@@ -388,11 +395,53 @@ const useStore = create((set, get) => ({
       startDate.setMonth(startDate.getMonth() + 1);
     }
     return monthYearList;
+  },
+
+  async getTopGainerAsset(startDt: string | Date, endDt: string | Date): Promise<{assetId:string, assetName:string, assetType:string, returnPercentage:number, returnAmount:number}> {
+    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage  } = get() as any;
+    const assets = getAllAssets();
+    const assetReturnAmounts: Record<string, number> = {};
+    for (const assetId in assets) {
+      const assetType = assets[assetId].asset_type;
+      const todaysReturnAmount = await getTodaysTotalReturnAmount(startDt, endDt, assetType, assetId);
+      assetReturnAmounts[assetId] = todaysReturnAmount;
+    }
+    const sortedAssetReturnAmounts = Object.entries(assetReturnAmounts).sort((a, b) => b[1] - a[1]);
+    const topGainerAsset = sortedAssetReturnAmounts[0];
+    const topGainerAssetReturnPercentage = await getTodaysTotalReturnPercentage(startDt, endDt, assets[topGainerAsset[0]].asset_type, topGainerAsset[0]);
+    return {
+      assetId: topGainerAsset[0],
+      assetName: assets[topGainerAsset[0]].name,
+      assetType: assets[topGainerAsset[0]].asset_type,
+      returnPercentage: topGainerAssetReturnPercentage,
+      returnAmount: topGainerAsset[1],
+    };
+  },
+
+  async getTopLooserAsset(startDt: string | Date, endDt: string | Date): Promise<{assetId:string, assetName:string, assetType:string, returnPercentage:number, returnAmount:number}> {
+    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage  } = get() as any;
+    const assets = getAllAssets();
+    const assetReturnAmounts: Record<string, number> = {};
+    for (const assetId in assets) {
+      const assetType = assets[assetId].asset_type;
+      const todaysReturnAmount = await getTodaysTotalReturnAmount(startDt, endDt, assetType, assetId);
+      assetReturnAmounts[assetId] = todaysReturnAmount;
+    }
+    const sortedAssetReturnAmounts = Object.entries(assetReturnAmounts).sort((a, b) => a[1] - b[1]);
+    const topGainerAsset = sortedAssetReturnAmounts[0];
+    const topGainerAssetReturnPercentage = await getTodaysTotalReturnPercentage(startDt, endDt, assets[topGainerAsset[0]].asset_type, topGainerAsset[0]);
+    return {
+      assetId: topGainerAsset[0],
+      assetName: assets[topGainerAsset[0]].name,
+      assetType: assets[topGainerAsset[0]].asset_type,
+      returnPercentage: topGainerAssetReturnPercentage,
+      returnAmount: topGainerAsset[1],
+    };
   }
 
 }))
 
-async function loadTransactions() {
+async function loadTransactions(assetPriceHistory: []) {
   // if (cachedTransactions) return cachedTransactions;
 
   try {
@@ -411,11 +460,33 @@ async function loadTransactions() {
       throw new Error('Invalid CSV data format');
     }
 
-    //   cachedTransactions = results.data;
-    //   return cachedTransactions;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffInDays = dateDifferenceInDays(today, PIVOT_ACTIVE_DATE);
+    const shouldShiftDates = diffInDays != 0;
+
     for (const transaction of results.data) {
+      const assetId = transaction.asset_id;
       transaction.date = new Date(transaction.date);
       transaction.date.setHours(0, 0, 0, 0);
+      
+      if (shouldShiftDates) {
+        if(diffInDays>0) {
+          transaction.date.setDate(transaction.date.getDate() + diffInDays);
+        } else {
+          transaction.date.setDate(transaction.date.getDate() - diffInDays);
+        }
+      }
+
+      for (let i = assetPriceHistory.length - 1; i >= 0; i--) {
+        const priceRecord = assetPriceHistory[i];
+        if (priceRecord[assetId] && priceRecord.date <= transaction.date) {
+          transaction.price = priceRecord[assetId];
+          break;
+        }
+      }
+      transaction.amount = transaction.quantity * transaction.price;
+
     }
     return results.data;
   } catch (error) {
@@ -442,10 +513,22 @@ async function loadPriceHistory() {
     if (!results.data || !Array.isArray(results.data)) {
       throw new Error('Invalid price history CSV format');
     }
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffInDays = dateDifferenceInDays(today, PIVOT_ACTIVE_DATE);
+    const shouldShiftDates = diffInDays != 0;
 
     for (const record of results.data) {
       record.date = new Date(record.date);
       record.date.setHours(0, 0, 0, 0);
+      if (shouldShiftDates) {
+        if(diffInDays>0) {
+          record.date.setDate(record.date.getDate() + diffInDays);
+        } else {
+          record.date.setDate(record.date.getDate() - diffInDays);
+        }
+      }
     }
     //   cachedPriceHistory = results.data;
     //   return cachedPriceHistory;
@@ -454,6 +537,16 @@ async function loadPriceHistory() {
     console.error('Error loading price history:', error);
     return [];
   }
+}
+
+function dateDifferenceInDays(date1: Date, date2: Date) {
+  const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+  const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+  const timeDifference =  normalizedDate1.getTime() - normalizedDate2.getTime();
+  const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+  return dayDifference;
 }
 
 

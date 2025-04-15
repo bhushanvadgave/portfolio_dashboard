@@ -14,9 +14,9 @@ function DashboardCard08() {
  useEffect(() => {
   const populateChartData = async () => {
     const data = await getMonthlyReturnPercentageByAssetType(startDate, activeDay);
-    console.log("monthly return percentage by asset type", data);
+    // console.log("monthly return percentage by asset type", data);
     const monthYearList = await getMonthYearList(startDate, activeDay);
-    console.log("month year list", monthYearList);
+    // console.log("month year list", monthYearList);
     const chartData = {
       labels: monthYearList,
       datasets: Object.keys(data).filter(assetType=> Object.keys(data[assetType]).length > 0).map(assetType => {
@@ -24,7 +24,7 @@ function DashboardCard08() {
         return {
           label: assetTypeObj.name,
           data: Object.values(data[assetType]),
-          borderColor: getCssVariable(`--color-${assetTypeObj.color}-500`),
+          borderColor: getCssVariable(`--color-${assetTypeObj.color}-300`),
           fill: false,
           borderWidth: 2,
           pointRadius: 0,
@@ -44,7 +44,7 @@ function DashboardCard08() {
  }, [startDate, activeDay]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div className="flex flex-col col-span-full sm:col-span-26 xl:col-span-26 bg-white dark:bg-gray-800 shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
         <h2 className="font-semibold text-gray-800 dark:text-gray-100">Asset Types Return Percentage</h2>
       </header>

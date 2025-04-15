@@ -33,8 +33,8 @@ function DashboardCard01() {
 
     const populateChartData = async () => {
       const [monthlyInvestmentAmounts, monthlyInvestmentValues] = await Promise.all([getMonthlyTotalInvestmentAmount('2015-01-01', new Date()), getMonthlyTotalInvestmentValue('2015-01-01', new Date())]);
-      console.log("monthlyInvestmentAmounts", monthlyInvestmentAmounts);
-      console.log("monthlyInvestmentValues", monthlyInvestmentValues);
+      // console.log("monthlyInvestmentAmounts", monthlyInvestmentAmounts);
+      // console.log("monthlyInvestmentValues", monthlyInvestmentValues);
 
       const chartData = {
         labels: Object.keys(monthlyInvestmentAmounts),
@@ -72,8 +72,8 @@ function DashboardCard01() {
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 3,
-            pointBackgroundColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
-            pointHoverBackgroundColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
+            pointBackgroundColor: adjustColorOpacity(getCssVariable('--color-sky-500'), 0.25),
+            pointHoverBackgroundColor: adjustColorOpacity(getCssVariable('--color-sky-500'), 0.25),
             pointBorderWidth: 0,
             pointHoverBorderWidth: 0,
             clip: 20,
@@ -81,7 +81,7 @@ function DashboardCard01() {
           },
         ],
       };
-      console.log("chartData", chartData);
+      // console.log("chartData", chartData);
       setChartData(chartData);
     };
     populateChartData();
@@ -89,7 +89,7 @@ function DashboardCard01() {
   }, [startDate, activeDay]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-4 xl:col-span-4 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl">
+    <div className="flex flex-col col-span-full sm:col-span-10 xl:col-span-10 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className="px-5 pt-5">
         <header className="flex justify-between items-start mb-2">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Net Worth</h2>

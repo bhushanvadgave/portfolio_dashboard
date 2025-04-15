@@ -2,88 +2,108 @@
     "assets":{
         "tata_steel":{
             "name":"Tata Steel",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/tata_steel.png"
         },
         "reliance_industries":{
             "name":"Reliance Industries",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/reliance_industries.png"
         },
         "adani_enterprises":{
             "name":"Adani Enterprises",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/adani_enterprises.png"
         },
         "asian_paints":{
             "name":"Asian Paints",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/asian_paints.png"
         },
         "bharti_airtel":{
             "name":"Bharti Airtel",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/bharti_airtel.png"
         },
         "bajaj_finserv":{
             "name":"Bajaj Finserv",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/bajaj_finserv.png"
         },
         "hdfc_bank":{
             "name":"HDFC Bank",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/hdfc_bank.png"
         },
         "infosys":{
             "name":"Infosys",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/infosys.png"
         },
         "itc":{
             "name":"ITC",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/itc.png"
         },
         "hero_moto_corps":{
             "name":"Hero MotoCorp",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/hero_moto_corps.png"
         },
         "mahindra_and_mahindra":{
             "name":"Mahindra & Mahindra",
-            "asset_type":"stock",
+            "asset_type":"domestic_equity",
             "iconImage":"/assets/icons/mahindra_and_mahindra.png"
         },
-        "parag_parikh":{
-            "name":"Parag Parikh Flexi Cap Fund",
-            "asset_type":"mutual_fund",
-            "iconImage":"/assets/icons/parag_parikh.png"
-        },
-        "nippon_india_growth_fund":{
-            "name":"Nippon India Growth Fund",
-            "asset_type":"mutual_fund",
-            "iconImage":"/assets/icons/nippon_india_growth_fund.png"
-        },
-        "nippon_india_small_cap_fund":{
+        "nippon_india_smallcap_fund":{
             "name":"Nippon India Small Cap Fund",
-            "asset_type":"mutual_fund",
+            "asset_type":"domestic_equity",
+            "iconImage":"/assets/icons/nippon_india_smallcap_fund.png"
+        },
+        "parag_parikh_flexi_cap_fund":{
+            "name":"Parag Parikh Flexi Cap Fund",
+            "asset_type":"domestic_equity",
+            "iconImage":"/assets/icons/parag_parikh_flexi_cap_fund.png"
+        },
+        "hdfc_liquid_fund":{
+            "name":"HDFC Liquid Fund",
+            "asset_type":"debt",
+            "iconImage":"/assets/icons/hdfc_liquid_fund.png"
+        },
+        "sbi_liquid_fund":{
+            "name":"SBI Liquid Fund",
+            "asset_type":"debt",
             "iconImage":"/assets/icons/nippon_india_small_cap_fund.png"
         },
-        "dsp_elss_tax_saver_fund":{
-            "name":"DSP ELSS Tax Saver Fund",
-            "asset_type":"mutual_fund",
-            "iconImage":"/assets/icons/dsp_elss_tax_saver_fund.png"
+        "axis_liquid_fund":{
+            "name":"Axis Liquid Fund",
+            "asset_type":"debt",
+            "iconImage":"/assets/icons/axis_liquid_fund.png"
         },
-        "nippon_india_multi_cap_fund":{
-            "name":"Nippon India Multi Cap Fund",
-            "asset_type":"mutual_fund",
-            "iconImage":"/assets/icons/nippon_india_multi_cap_fund.png"
+        "icici_pru_liquid_fund":{
+            "name":"ICICI Pru Liquid Fund",
+            "asset_type":"debt",
+            "iconImage":"/assets/icons/nippon_india_large_cap_fund.png"
         },
-        "quant_multi_cap_fund":{
-            "name":"Quant Multi Cap Fund",
-            "asset_type":"mutual_fund",
-            "iconImage":"/assets/icons/quant_multi_cap_fund.png"
+        "snp_500":{
+            "name":"S&P 500",
+            "asset_type":"us_equity",
+            "iconImage":"/assets/icons/snp_500.png"
+        },
+        "nasdaq_100":{
+            "name":"Nasdaq 100",
+            "asset_type":"us_equity",
+            "iconImage":"/assets/icons/nasdaq_100.png"
+        },
+        "bitcoin":{
+            "name":"Bitcoin",
+            "asset_type":"crypto",
+            "iconImage":"/assets/icons/bitcoin.png"
+        },
+        "ethereum":{
+            "name":"Ethereum",
+            "asset_type":"crypto",
+            "iconImage":"/assets/icons/ethereum.png"
         },
         "physical_gold":{
             "name":"Physical Gold",
@@ -95,35 +115,10 @@
             "asset_type":"gold",
             "iconImage":"/assets/icons/sgb.png"
         },
-        "mumbai_house":{
-            "name":"Mumbai House",
+        "pune_commercial_space":{
+            "name":"Pune Commercial Space",
             "asset_type":"real_estate",
-            "iconImage":"/assets/icons/mumbai_house.png"
-        },
-        "pune_commercial_property":{
-            "name":"Pune Commercial Property",
-            "asset_type":"real_estate",
-            "iconImage":"/assets/icons/pune_commercial_property.png"
-        },
-        "kotak_bank_fd1":{
-            "name":"Kotak Bank FD 1",
-            "asset_type":"fd",
-            "iconImage":"/assets/icons/kotak_bank_fd1.png"
-        },
-        "kotak_bank_fd2":{
-            "name":"Kotak Bank FD 2",
-            "asset_type":"fd",
-            "iconImage":"/assets/icons/kotak_bank_fd2.png"
-        },  
-        "bitcoin":{
-            "name":"Bitcoin",
-            "asset_type":"crypto",
-            "iconImage":"/assets/icons/bitcoin.png"
-        },
-        "ethereum":{
-            "name":"Ethereum",
-            "asset_type":"crypto",
-            "iconImage":"/assets/icons/ethereum.png"
+            "iconImage":"/assets/icons/pune_commercial_space.png"
         }
     }
 }

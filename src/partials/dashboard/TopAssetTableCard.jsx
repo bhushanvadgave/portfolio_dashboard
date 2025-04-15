@@ -10,14 +10,14 @@ function DashboardCard07() {
   useEffect(() => {
     const fetchTopPerformingAssets = async () => {
       const assets = await getTopPerformingAssets(startDate, activeDay, 'returnPercentage');
-      console.log("assets", assets);
+      // console.log("assets", assets);
       setTopPerformingAssets(assets.filter(asset => asset.returnPercentage > 0).slice(0, 10));
     };
     fetchTopPerformingAssets();
   }, [startDate, activeDay]);
 
   return (
-    <div className="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div className="col-span-full xl:col-span-32 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
         <h2 className="font-semibold text-gray-800 dark:text-gray-100">Top Performing Assets</h2>
       </header>

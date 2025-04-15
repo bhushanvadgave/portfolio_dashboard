@@ -14,9 +14,13 @@ function DashboardCard09() {
   const [chartData, setChartData] = useState();
 
   useEffect(() => {
+    console.log("activeDay in AssetTypePerformanceBarChartCard =", activeDay);
     const populateChartData = async () => {
       const data = await getTotalReturnPercentageByAssetType(startDate, activeDay);
-      console.log("Total Return Percentage By Asset Type", data);
+      Object.keys(data).forEach(key=>{
+        if(data[key] === 0) delete data[key];
+      })
+      // console.log("Total Return Percentage By Asset Type", data);
       // setTotalReturnPercentageByAssetType(data);
       const chartData = {
         labels: Object.keys(data).map(k=>getAssetType(k).name),
@@ -28,11 +32,11 @@ function DashboardCard09() {
 
             backgroundColor: Object.keys(data).map(k=>{
               const assetType = getAssetType(k);
-              return getCssVariable(`--color-${assetType.color}-400`)
+              return getCssVariable(`--color-${assetType.color}-300`)
             }),
             hoverBackgroundColor: Object.keys(data).map(k=>{
               const assetType = getAssetType(k);
-              return getCssVariable(`--color-${assetType.color}-600`)
+              return getCssVariable(`--color-${assetType.color}-500`)
             }),
             barPercentage: 0.8,
             categoryPercentage: 0.7,
@@ -58,7 +62,7 @@ function DashboardCard09() {
   }, [startDate, activeDay]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div className="flex flex-col col-span-full sm:col-span-13 xl:col-span-13 bg-white dark:bg-gray-800 shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
         <h2 className="font-semibold text-gray-800 dark:text-gray-100">Assets Performance</h2>
         {/* <Tooltip className="ml-2" size="lg">
@@ -74,7 +78,7 @@ function DashboardCard09() {
       {/* Chart built with Chart.js 3 */}
       {chartData && <div className="grow">
         {/* Change the height attribute to adjust the chart height */}
-        <BarChart data={chartData} width={350} height={220} />
+        <BarChart data={chartData} width={350} height={180} />
       </div>}
     </div>
   );

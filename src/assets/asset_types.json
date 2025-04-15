@@ -1,7 +1,7 @@
 {
     "asset_types": {
-        "stock": {
-            "name": "Stock",
+        "domestic_equity": {
+            "name": "Equity",
             "icon": "/assets/stock.png",
             "color": "pink"
         },
@@ -15,14 +15,14 @@
             "icon": "/assets/crypto.png",
             "color": "teal"
         },
-        "fd": {
-            "name": "Fixed Deposit",
-            "icon": "/assets/fd.png",
+        "debt": {
+            "name": "Debt",
+            "icon": "/assets/debt.png",
             "color": "indigo"
         },
-        "mutual_fund": {
-            "name": "Mutual Fund",
-            "icon": "/assets/mutual_fund.png",
+        "us_equity": {
+            "name": "US Equity",
+            "icon": "/assets/us_equity.png",
             "color": "orange"
         },
         "real_estate": {
