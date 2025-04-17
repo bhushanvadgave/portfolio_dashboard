@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { assets } from "./assets/assets.json"
 import { asset_types } from "./assets/asset_types.json"
 import Papa from 'papaparse';
-import { format, isSameDay, differenceInDays} from 'date-fns';
+import { format, isSameDay, differenceInDays } from 'date-fns';
+import { formatValue } from './utils/Utils';
 
 const PIVOT_ACTIVE_DATE = new Date('2025-04-10');
 PIVOT_ACTIVE_DATE.setHours(0, 0, 0, 0);
@@ -10,18 +11,24 @@ PIVOT_ACTIVE_DATE.setHours(0, 0, 0, 0);
 //   let cachedTransactions: any[] | null = null;
 //   let cachedPriceHistory: any[] | null = null;
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const useStore = create((set, get) => ({
+  // isLoading: false,
   activeDay: new Date(),
   setActiveDay: (day: Date | string) => set({ activeDay: new Date(day) }),
   startDate: new Date('2015-01-01'),
   investmentStartDate: new Date('2015-01-01'),
+  timelineHighlights: [],
   // currentDate: new Date(),
   // totalInvestmentAmount: 0,
   // totalInvestmentValue: 0,
   investmentTransactions: [],
   assetPriceHistory: [],
+  domesticEquityAssetsWithInvestments: {},
 
   updateActiveDayAndStartDate: async (stDate: Date, enDate: Date) => {
+    // set({ isLoading: true });
+    // await sleep(10000);
     set({ startDate: stDate, activeDay: enDate });
   },
 
@@ -32,7 +39,9 @@ const useStore = create((set, get) => ({
     firstDateOfInvestment.setHours(0, 0, 0, 0);
     const actDay = new Date();
     actDay.setHours(0, 0, 0, 0);
-    set({ investmentTransactions, assetPriceHistory, startDate: firstDateOfInvestment, investmentStartDate: firstDateOfInvestment, activeDay: actDay });
+    const highlights = await getTimelineHighlights(assetPriceHistory, investmentTransactions);
+    const domesticEquityAssetsWithInvestments = getDomesticEquityAssetsWithInvestments(investmentTransactions);
+    set({ investmentTransactions, assetPriceHistory, startDate: firstDateOfInvestment, investmentStartDate: firstDateOfInvestment, activeDay: actDay, timelineHighlights: highlights, domesticEquityAssetsWithInvestments });
   },
 
   // setCurrentDate: async (starDate: Date, endDate: Date) => {
@@ -197,7 +206,7 @@ const useStore = create((set, get) => ({
     return yesterdayReturnAmount > 0 ? (todaysReturnAmount / yesterdayReturnAmount) * 100 : 0;
   },
 
-  async getMonthlyTotalInvestmentAmount(startDt: string | Date, endDt: string | Date, assetType?: string): Promise<Record<string, number>> {
+  async getMonthlyTotalInvestmentAmount(startDt: string | Date, endDt: string | Date, assetType?: string, assetId?: string): Promise<Record<string, number>> {
     const startDate = new Date(startDt);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(endDt);
@@ -214,27 +223,33 @@ const useStore = create((set, get) => ({
 
 
       investmentTransactions
-      .filter(t => {
-        if (assetType) {
-          return getAsset(t.asset_id).asset_type === assetType;
-        }
-        return true;
-      })
-      .forEach((transaction: any) => {
-        const transactionDate = transaction.date;
+        .filter(t => {
+          if (assetType) {
+            return getAsset(t.asset_id).asset_type === assetType;
+          }
+          return true;
+        })
+        .filter(t => {
+          if (assetId) {
+            return t.asset_id === assetId;
+          }
+          return true;
+        })
+        .forEach((transaction: any) => {
+          const transactionDate = transaction.date;
 
-        const transactionMonth = transactionDate.getMonth();
-        const transactionYear = transactionDate.getFullYear();
+          const transactionMonth = transactionDate.getMonth();
+          const transactionYear = transactionDate.getFullYear();
 
-        const currentMonth = currentMonthDate.getMonth();
-        const currentYear = currentMonthDate.getFullYear();
+          const currentMonth = currentMonthDate.getMonth();
+          const currentYear = currentMonthDate.getFullYear();
 
-        // console.log("currentMonthDate", currentMonthDate, "transactionDate", transactionDate, "lastMonthDate", lastMonthDate, "condition", currentMonthDate >= transactionDate);
-        if (currentMonthDate >= transactionDate || (currentYear === transactionYear && currentMonth === transactionMonth)) {
-          // Add transaction amount to monthly total
-          monthlyAmounts[monthKey] = (monthlyAmounts[monthKey] || 0) + (transaction.amount || 0);
-        }
-      });
+          // console.log("currentMonthDate", currentMonthDate, "transactionDate", transactionDate, "lastMonthDate", lastMonthDate, "condition", currentMonthDate >= transactionDate);
+          if (currentMonthDate >= transactionDate || (currentYear === transactionYear && currentMonth === transactionMonth)) {
+            // Add transaction amount to monthly total
+            monthlyAmounts[monthKey] = (monthlyAmounts[monthKey] || 0) + (transaction.amount || 0);
+          }
+        });
 
       currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
     }
@@ -242,7 +257,10 @@ const useStore = create((set, get) => ({
     return monthlyAmounts;
   },
 
-  async getMonthlyTotalInvestmentValue(startDt: string | Date, endDt: string | Date, assetType?: string): Promise<Record<string, number>> {
+  async getMonthlyTotalInvestmentValue(startDt: string | Date, endDt: string | Date, assetType?: string, assetId?: string): Promise<Record<string, number>> {
+    if (assetId == "itc") {
+      const t = 0;
+    }
     const startDate = new Date(startDt);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(endDt);
@@ -261,27 +279,35 @@ const useStore = create((set, get) => ({
       const monthKey = `${currentMonthDate.getFullYear()}-${String(currentMonthDate.getMonth() + 1).padStart(2, '0')}`;
       //--------
       const thisMonthAssetQuantities = investmentTransactions
-      .filter(t => {
-        if (assetType) {
-          return getAsset(t.asset_id).asset_type === assetType;
-        }
-        return true;
-      })
-      .reduce((acc: { [monthYear: string]: { [assetId: string]: number } }, transaction: any) => {
-        const transactionDate = transaction.date;
-        const transactionMonth = transactionDate.getMonth();
-        const transactionYear = transactionDate.getFullYear();
+        .filter(t => {
+          if (assetType) {
+            return getAsset(t.asset_id).asset_type === assetType;
+          }
+          return true;
+        })
+        .filter(t => {
+          if (assetId) {
+            return t.asset_id === assetId;
+          }
+          return true;
+        })
+        .reduce((acc: { [monthYear: string]: { [assetId: string]: number } }, transaction: any) => {
+          const transactionDate = transaction.date;
+          const transactionMonth = transactionDate.getMonth();
+          const transactionYear = transactionDate.getFullYear();
 
-        const currentMonth = currentMonthDate.getMonth();
-        const currentYear = currentMonthDate.getFullYear();
+          const currentMonth = currentMonthDate.getMonth();
+          const currentYear = currentMonthDate.getFullYear();
 
-        if (currentMonthDate.getTime() >= transactionDate.getTime() || (currentYear === transactionYear && currentMonth === transactionMonth)) {
           const assetId = transaction.asset_id;
           acc[monthKey] = acc[monthKey] || {};
-          acc[monthKey][assetId] = (acc[monthKey][assetId] || 0) + (transaction.quantity || 0);
-        }
-        return acc;
-      }, {});
+          acc[monthKey][assetId] = acc[monthKey][assetId] || 0;
+
+          if (currentMonthDate.getTime() >= transactionDate.getTime() || (currentYear === transactionYear && currentMonth === transactionMonth)) {
+            acc[monthKey][assetId] = acc[monthKey][assetId] + (transaction.quantity || 0);
+          }
+          return acc;
+        }, {});
       monthlyAssetQuantities = { ...monthlyAssetQuantities, ...thisMonthAssetQuantities };
       //--------
       currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
@@ -292,7 +318,10 @@ const useStore = create((set, get) => ({
     for (const [monthYear, assetQuantityMap] of Object.entries(monthlyAssetQuantities)) {
       for (const [assetId, quantity] of Object.entries(assetQuantityMap as { [assetId: string]: number })) {
         const assetPrices = assetPriceHistory
-          .filter((row: any) => row.date <= endDate && row.date >= startDate)
+          .filter((row: any) => {
+            const ym = `${row.date.getFullYear()}-${String(row.date.getMonth() + 1).padStart(2, '0')}`;
+            return ym === monthYear;
+          })
           .sort((a: any, b: any) => b.date.getTime() - a.date.getTime());
 
         if (assetPrices.length > 0) {
@@ -309,7 +338,7 @@ const useStore = create((set, get) => ({
     const { getMonthlyTotalInvestmentAmount, getMonthlyTotalInvestmentValue } = get() as any;
     const monthlyInvestmentAmounts = await getMonthlyTotalInvestmentAmount(startDt, endDt, assetType);
     const monthlyInvestmentValues = await getMonthlyTotalInvestmentValue(startDt, endDt, assetType);
-  
+
     const monthlyReturnPercentages: Record<string, number> = {};
     for (const [monthYear, amount] of Object.entries(monthlyInvestmentAmounts)) {
       const amount = monthlyInvestmentAmounts[monthYear];
@@ -360,6 +389,32 @@ const useStore = create((set, get) => ({
     return results;
   },
 
+  async getWorstPerformingAssets(startDt: string | Date, endDt: string | Date, sortBy: string = 'returnPercentage') {
+    const { getTotalInvestmentAmount, getTotalInvestmentValue, getAllAssets } = get() as any;
+    const assets = getAllAssets();
+    const results: { assetId: string; assetName: string; assetType: string; investmentAmount: number; investmentValue: number; returnAmount: number; returnPercentage: number }[] = [];
+    for (const assetId in assets) {
+      const assetType = assets[assetId].asset_type;
+      const totalInvestmentAmount = await getTotalInvestmentAmount(startDt, endDt, assetType, assetId);
+      const totalInvestmentValue = await getTotalInvestmentValue(startDt, endDt, assetType, assetId);
+      const returnAmount = totalInvestmentValue - totalInvestmentAmount;
+      const returnPercentage = totalInvestmentAmount > 0 ? ((totalInvestmentValue - totalInvestmentAmount) / totalInvestmentAmount) * 100 : 0;
+      results.push({
+        assetId,
+        assetName: assets[assetId].name,
+        assetType,
+        investmentAmount: totalInvestmentAmount,
+        investmentValue: totalInvestmentValue,
+        returnAmount,
+        returnPercentage
+      });
+    }
+    if (sortBy === 'returnPercentage') {
+      results.sort((a, b) => a.returnPercentage - b.returnPercentage);
+    }
+    return results;
+  },
+
   async getTotalReturnPercentageByAssetType(startDt: string | Date, endDt: string | Date): Promise<Record<string, number>> {
     const { getTotalInvestmentAmount, getTotalInvestmentValue, getAllAssetTypes } = get() as any;
     const assetTypes = getAllAssetTypes();
@@ -373,16 +428,18 @@ const useStore = create((set, get) => ({
     return totalReturnPercentageByAssetType;
   },
 
-  async getMonthlyReturnPercentageByAssetType(startDt: string | Date, endDt: string | Date): Promise<Record<string, Record<string, number>>> {
-    const { getMonthlyTotalReturnPercentage, getAllAssetTypes } = get() as any;
-    const assetTypes = getAllAssetTypes();
-    const monthlyReturnPercentageByAssetType: Record<string, Record<string, number>> = {};
-    for (const assetType in assetTypes) {
-      const monthlyReturnPercentage = await getMonthlyTotalReturnPercentage(startDt, endDt, assetType);
-      monthlyReturnPercentageByAssetType[assetType] = monthlyReturnPercentage;
-    }
-    return monthlyReturnPercentageByAssetType;
-  },
+  // async getMonthlyValueByAssetType(startDt: string | Date, endDt: string | Date): Promise<Record<string, Record<string, number>>> {
+  //   const { getMonthlyTotalInvestmentValue, getAllAssetTypes } = get() as any;
+  //   const assetTypes = getAllAssetTypes();
+  //   const monthlyValueByAssetType: Record<string, Record<string, number>> = {};
+  //   for (const assetType in assetTypes) {
+  //     const monthlyValue = await getMonthlyTotalInvestmentValue(startDt, endDt, assetType);
+  //     monthlyValueByAssetType[assetType] = monthlyValue;
+  //   }
+  //   return monthlyValueByAssetType;
+  // },
+
+
 
   async getMonthYearList(startDt: string | Date, endDt: string | Date): Promise<string[]> {
     const startDate = new Date(startDt);
@@ -397,8 +454,8 @@ const useStore = create((set, get) => ({
     return monthYearList;
   },
 
-  async getTopGainerAsset(startDt: string | Date, endDt: string | Date): Promise<{assetId:string, assetName:string, assetType:string, returnPercentage:number, returnAmount:number}> {
-    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage  } = get() as any;
+  async getTopGainerAsset(startDt: string | Date, endDt: string | Date): Promise<{ assetId: string, assetName: string, assetType: string, returnPercentage: number, returnAmount: number }> {
+    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage } = get() as any;
     const assets = getAllAssets();
     const assetReturnAmounts: Record<string, number> = {};
     for (const assetId in assets) {
@@ -418,8 +475,8 @@ const useStore = create((set, get) => ({
     };
   },
 
-  async getTopLooserAsset(startDt: string | Date, endDt: string | Date): Promise<{assetId:string, assetName:string, assetType:string, returnPercentage:number, returnAmount:number}> {
-    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage  } = get() as any;
+  async getTopLooserAsset(startDt: string | Date, endDt: string | Date): Promise<{ assetId: string, assetName: string, assetType: string, returnPercentage: number, returnAmount: number }> {
+    const { getTotalInvestmentValue, getAllAssets, getTotalInvestmentAmount, getTodaysTotalReturnAmount, getTodaysTotalReturnPercentage } = get() as any;
     const assets = getAllAssets();
     const assetReturnAmounts: Record<string, number> = {};
     for (const assetId in assets) {
@@ -437,6 +494,24 @@ const useStore = create((set, get) => ({
       returnPercentage: topGainerAssetReturnPercentage,
       returnAmount: topGainerAsset[1],
     };
+  },
+
+  // async getMonthlyDomesticEquityAssetValue(startDt: string | Date, endDt: string | Date): Promise<Record<string, Record<string, number>>> {
+  //   const { getAllAssets, getMonthlyTotalInvestmentValue } = get() as any;
+  //   const assets = getAllAssets();
+  //   const domesticEquityAssets = Object.keys(assets).filter((key: any) => assets[key].asset_type === 'domestic_equity');
+  //   const result: Record<string, Record<string, number>> = {};
+  //   for (const assetId of domesticEquityAssets) {
+  //     const assetType = assets[assetId].asset_type;
+  //     const monthlyDomesticEquityAssetValue = await getMonthlyTotalInvestmentValue(startDt, endDt, assetType, assetId);
+  //     result[assetId] = monthlyDomesticEquityAssetValue;
+  //   }
+  //   return result;
+  // }
+
+  getMonthlyValueByAsset(startDt: string | Date, endDt: string | Date, assetId: string): Promise<Record<string, number>> {
+    const { getMonthlyTotalInvestmentValue, getAsset } = get() as any;
+    return getMonthlyTotalInvestmentValue(startDt, endDt, getAsset(assetId).asset_type, assetId);
   }
 
 }))
@@ -445,7 +520,7 @@ async function loadTransactions(assetPriceHistory: []) {
   // if (cachedTransactions) return cachedTransactions;
 
   try {
-    const response = await fetch('/src/assets/investment_transactions.csv');
+    const response = await fetch('/investment_transactions.csv');
     if (!response.ok) {
       throw new Error(`Failed to fetch transactions: ${response.status} ${response.statusText}`);
     }
@@ -469,9 +544,9 @@ async function loadTransactions(assetPriceHistory: []) {
       const assetId = transaction.asset_id;
       transaction.date = new Date(transaction.date);
       transaction.date.setHours(0, 0, 0, 0);
-      
+
       if (shouldShiftDates) {
-        if(diffInDays>0) {
+        if (diffInDays > 0) {
           transaction.date.setDate(transaction.date.getDate() + diffInDays);
         } else {
           transaction.date.setDate(transaction.date.getDate() - diffInDays);
@@ -499,7 +574,7 @@ async function loadPriceHistory() {
   // if (cachedPriceHistory) return cachedPriceHistory;
 
   try {
-    const response = await fetch('/src/assets/asset_price_history.csv');
+    const response = await fetch('/asset_price_history.csv');
     if (!response.ok) {
       throw new Error('Failed to fetch price history');
     }
@@ -513,7 +588,7 @@ async function loadPriceHistory() {
     if (!results.data || !Array.isArray(results.data)) {
       throw new Error('Invalid price history CSV format');
     }
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const diffInDays = dateDifferenceInDays(today, PIVOT_ACTIVE_DATE);
@@ -523,7 +598,7 @@ async function loadPriceHistory() {
       record.date = new Date(record.date);
       record.date.setHours(0, 0, 0, 0);
       if (shouldShiftDates) {
-        if(diffInDays>0) {
+        if (diffInDays > 0) {
           record.date.setDate(record.date.getDate() + diffInDays);
         } else {
           record.date.setDate(record.date.getDate() - diffInDays);
@@ -543,11 +618,72 @@ function dateDifferenceInDays(date1: Date, date2: Date) {
   const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
   const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
 
-  const timeDifference =  normalizedDate1.getTime() - normalizedDate2.getTime();
+  const timeDifference = normalizedDate1.getTime() - normalizedDate2.getTime();
   const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
 
   return dayDifference;
 }
 
+async function getTimelineHighlights(assetPriceHistory, investmentTransactions): Promise<any> {
+  const groupedTransactions = investmentTransactions.filter((t, i) => i != 0).reduce((acc, t) => {
+    const dateStr = t.date.toISOString().split('T')[0];
+    if (!acc[dateStr]) {
+      acc[dateStr] = {
+        date: t.date,
+        amount: 0,
+        transactions: []
+      };
+    }
+    acc[dateStr].amount += t.amount;
+    acc[dateStr].transactions.push(t);
+    return acc;
+  }, {});
+
+  const topInvestmentTransactions = Object.values(groupedTransactions)
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 10);
+
+  const highlights = [
+    {
+      date: investmentTransactions[0].date,
+      highlightName: 'Your First Investment',
+      description: `Hurray! You made your first investment. You puchased ${investmentTransactions[0].quantity} units of ${assets[investmentTransactions[0].asset_id].name} for ${formatValue(investmentTransactions[0].amount)}.`,
+      icon: 'star',
+      iconColor: 'violet-400'
+    }
+  ];
+  topInvestmentTransactions.forEach(t => {
+    try{
+    if (t.transactions.length == 1) {
+      highlights.push({
+        date: t.date,
+        highlightName: 'Significant Investment',
+        description: `You invested a big amount. You puchased ${t.quantity} units of ${assets[t.transactions[0].asset_id].name} for ${formatValue(t.transactions[0].amount)}.`,
+        icon: 'star',
+        iconColor: 'violet-400'
+      })
+    } else {
+      highlights.push({
+        date: t.date,
+        highlightName: 'Significant Investment',
+        description: `You invested into multiple assets. You invested total of ${formatValue(t.amount)}.`,
+        icon: 'star',
+        iconColor: 'violet-400'
+      })
+    }
+  } catch (error) {
+    console.error('Error loading timeline highlights:', t, error);
+  }
+  })
+  return highlights.sort((a, b) => a.date.getTime() - b.date.getTime());
+  // return [];
+}
+
+function getDomesticEquityAssetsWithInvestments(investmentTransactions) {
+  const result = {};
+  const domesticEquityAssets = Object.keys(assets).filter(k => assets[k].asset_type === "domestic_equity").filter(k => investmentTransactions.some(t => t.asset_id === k));
+  domesticEquityAssets.forEach(k => result[k] = assets[k]);
+  return result;
+}
 
 export default useStore;

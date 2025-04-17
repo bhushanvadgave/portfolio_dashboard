@@ -92,8 +92,8 @@ function BarChart02({
           x: {
             stacked: true,
             type: 'linear',
-            min: Math.min(...data.datasets[0].data)-10,
-            max: Math.max(...data.datasets[0].data)+10,
+            min: data.datasets[0].data.some(d=>d<0) ? Math.min(...data.datasets[0].data)-15 : undefined,
+            max: data.datasets[0].data.some(d=>d>0) ? Math.max(...data.datasets[0].data)+15 : undefined,
             // grace: 5,
             // time: {
             //   parser: 'YYYY-MM',

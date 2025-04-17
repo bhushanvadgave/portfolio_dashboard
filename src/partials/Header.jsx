@@ -78,7 +78,7 @@ function Header({
             {/* App Logo and Name */}
             <div className="flex items-center">
               <CircleDollarSign className="h-8 w-8 text-violet-600 dark:text-violet-400" />
-              <span className="ml-2 text-3xl font-bold text-violet-600 dark:text-violet-400">MyMoney</span>
+              <span className="ml-2 text-3xl font-bold text-violet-600 dark:text-violet-400">FinSight</span>
             </div>
             {/* Hamburger button */}
             {/* <button

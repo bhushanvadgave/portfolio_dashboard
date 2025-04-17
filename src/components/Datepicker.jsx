@@ -66,7 +66,7 @@ export default function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {startDate.getTime()==investmentStartDate.getTime() ? "Beginning" : format(date.from, "LLL dd, y")} -{" "}
+                  {startDate.getTime()==investmentStartDate.getTime() ? format(date.from, "LLL dd, y")+" (First Day of Investment)" : format(date.from, "LLL dd, y")} -{" "}
                   {activeDay.getTime()==today.getTime() ? "Today" : format(date.to, "LLL dd, y")}
                 </>
               ) : (

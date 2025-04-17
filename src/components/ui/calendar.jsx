@@ -4,7 +4,7 @@ import * as React from "react"
 import { DayPicker } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
-
+import useStore from "../../store";
 function Calendar({
   className,
   classNames,
@@ -13,6 +13,9 @@ function Calendar({
   onSelect,
   ...props
 }) {
+
+  const {investmentStartDate, activeDay} = useStore();
+
   const [date, setDate] = React.useState(selected);
   return (
     <div>
@@ -58,11 +61,16 @@ function Calendar({
         {...props}
         selected={date}
         onSelect={setDate}
+        defaultMonth={activeDay}
+        disabled={{
+          before: investmentStartDate,
+          after: activeDay
+        }}
       />
       <div className="mt-4 flex justify-end px-3">
         <button
           onClick={() => onSelect?.(date)}
-          className="bg-violet-500 text-white px-4 py-2 rounded-md hover:bg-violet-600 transition-colors mb-2"
+          className="bg-violet-500 text-white px-4 py-2 rounded-md hover:bg-violet-600 transition-colors mb-2 cursor-pointer"
         >
           Done
         </button>

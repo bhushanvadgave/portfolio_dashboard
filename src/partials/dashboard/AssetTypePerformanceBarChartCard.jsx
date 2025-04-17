@@ -64,7 +64,7 @@ function DashboardCard09() {
   return (
     <div className="flex flex-col col-span-full sm:col-span-13 xl:col-span-13 bg-white dark:bg-gray-800 shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
-        <h2 className="font-semibold text-gray-800 dark:text-gray-100">Assets Performance</h2>
+        <h2 className="font-semibold text-gray-800 dark:text-gray-100">Assets Class Performance</h2>
         {/* <Tooltip className="ml-2" size="lg">
           <div className="text-sm">Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</div>
         </Tooltip> */}

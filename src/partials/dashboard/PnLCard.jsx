@@ -16,36 +16,19 @@ function DashboardCard02() {
   const [todaysReturnAmount, setTodaysReturnAmount] = useState(0);
   const [todaysReturnPercentage, setTodaysReturnPercentage] = useState(0);
   const [chartData, setChartData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
-    const fetchTotalReturnAmount = async () => {
-      const amount = await getTotalReturnAmount(startDate, activeDay);
-      setTotalReturnAmount(amount);
-    };
-    fetchTotalReturnAmount();
-
-    const fetchTotalReturnPercentage = async () => {
-      const percentage = await getTotalReturnPercentage(startDate, activeDay);
-      setTotalReturnPercentage(percentage);
-    };
-    fetchTotalReturnPercentage();
-
-    const fetchTodaysReturnAmount = async () => {
-      const amount = await getTodaysTotalReturnAmount(startDate, activeDay);
-      setTodaysReturnAmount(amount);
-      console.log("Todays Return Amount", amount);
-    };
-    fetchTodaysReturnAmount();
-
-    const fetchTodaysReturnPercentage = async () => {
-      const percentage = await getTodaysTotalReturnPercentage(startDate, activeDay);
-      setTodaysReturnPercentage(percentage);
-      console.log("Todays Return Percentage", percentage);
-    };
-    fetchTodaysReturnPercentage();
 
     const populateChartData = async () => {
-      const monthlyReturnPercentages = await getMonthlyTotalReturnPercentage(startDate, activeDay);
+      setIsLoading(true);
+      const [totalReturnAmount, totalReturnPercentage, todayReturnAmount, todayReturnPercentage, monthlyReturnPercentages] = await Promise.all([getTotalReturnAmount(startDate, activeDay), getTotalReturnPercentage(startDate, activeDay), getTodaysTotalReturnAmount(startDate, activeDay), getTodaysTotalReturnPercentage(startDate, activeDay), getMonthlyTotalReturnPercentage(startDate, activeDay)]);
+
+      setTotalReturnAmount(totalReturnAmount);
+      setTotalReturnPercentage(totalReturnPercentage);
+      setTodaysReturnAmount(todayReturnAmount);
+      setTodaysReturnPercentage(todayReturnPercentage);
 
       const chartData = {
         labels: Object.keys(monthlyReturnPercentages),
@@ -77,12 +60,18 @@ function DashboardCard02() {
       };
 
       setChartData(chartData);
+      setIsLoading(false);
     }
     populateChartData();
   }, [startDate, activeDay]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-10 xl:col-span-10 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="flex flex-col col-span-full sm:col-span-10 xl:col-span-10 bg-white dark:bg-gray-800 h-[18rem] shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (<>
       <div className="px-5 pt-5">
         <header className="flex justify-between items-start mb-2">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">P&L</h2>
@@ -123,10 +112,11 @@ function DashboardCard02() {
         </div>
       </div>
       {/* Chart built with Chart.js 3 */}
-      {chartData && <div className="grow max-sm:max-h-[128px] max-h-[128px]">
+      <div className="grow max-sm:max-h-[150px] max-h-[150px]">
         {/* Change the height attribute to adjust the chart height */}
         <LineChart data={chartData} width={389} height={128} />
-      </div>}
+      </div>
+      </>)}
     </div>
   );
 }

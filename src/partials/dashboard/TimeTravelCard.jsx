@@ -10,23 +10,7 @@ import useStore from '../../store';
 
 function DashboardCard03() {
 
-  const {investmentStartDate, activeDay} = useStore();
-  const [highlights, setHighlights] = useState([
-    {
-    date: '2021-01-01',
-    highlightName: 'Hig edfs asdsa asfa asf',
-    description: 'Description 1  sdfds  sdfdsfs sdfsdfsfsfdfs sdfsfsfsfs sdfsfs dfsafs',
-    icon: 'star',
-    iconColor: 'yellow-400'
-  },
-  {
-    date: '2021-05-12',
-    highlightName: 'Hig edfs asdsa asfa asf 2',
-    description: 'Description 1  sdfds  sdfdsfs sdfsdfsfsfdfs sdfsfsfsfs sdfsfs dfsafs',
-    icon: 'star',
-    iconColor: 'violet-400'
-  }
-]);
+  const {investmentStartDate, activeDay, timelineHighlights} = useStore();
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white dark:bg-gray-800 row-span-3 shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
@@ -53,7 +37,7 @@ function DashboardCard03() {
           </EditMenu> */}
         </header>
             <div className="grow">
-              <Timeline startDate={investmentStartDate} endDate={new Date()} highlights={highlights}/>
+              <Timeline startDate={investmentStartDate} endDate={new Date()} highlights={timelineHighlights}/>
             </div>
         {/* <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Sales</div>
         <div className="flex items-start">

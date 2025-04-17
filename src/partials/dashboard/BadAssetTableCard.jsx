@@ -4,22 +4,22 @@ import { formatValue, formatDecimal, formatValue2} from '../../utils/Utils';
 
 function DashboardCard07() {
 
-  const { getTopPerformingAssets, startDate, activeDay } = useStore();
-  const [topPerformingAssets, setTopPerformingAssets] = useState([]);
+  const { getWorstPerformingAssets, startDate, activeDay } = useStore();
+  const [performingAssets, setPerformingAssets] = useState([]);
 
   useEffect(() => {
-    const fetchTopPerformingAssets = async () => {
-      const assets = await getTopPerformingAssets(startDate, activeDay, 'returnPercentage');
+    const fetchWorstPerformingAssets = async () => {
+      const assets = await getWorstPerformingAssets(startDate, activeDay, 'returnPercentage');
       // console.log("assets", assets);
-      setTopPerformingAssets(assets.filter(asset => asset.returnPercentage > 0).slice(0, 5));
+      setPerformingAssets(assets.filter(asset => asset.returnPercentage > 0).slice(0, 5));
     };
-    fetchTopPerformingAssets();
+    fetchWorstPerformingAssets();
   }, [startDate, activeDay]);
 
   return (
     <div className="col-span-full xl:col-span-32 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-        <h2 className="font-semibold text-gray-800 dark:text-gray-100">Top Performing Assets</h2>
+        <h2 className="font-semibold text-gray-800 dark:text-gray-100">Low Performing Assets</h2>
       </header>
       <div className="p-3">
         {/* Table */}
@@ -48,7 +48,7 @@ function DashboardCard07() {
             {/* Table body */}
             <tbody className="text-sm font-medium divide-y divide-gray-100 dark:divide-gray-700/60">
               {/* Row */}
-              {topPerformingAssets.map((asset) => (
+              {performingAssets.map((asset) => (
                 <tr key={asset.assetId}>
                   <td className="p-2">
                     <div className="flex items-center">

@@ -6,13 +6,13 @@ export const formatValue = (value) => {
   let formattedValue;
 
   if (absValue >= 10000000) { // For crores (≥1Cr)
-    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 10000000).toFixed(2)}Cr`;
+    formattedValue = `${value<0 ? "-" : ""}₹${Number.isInteger(absValue / 10000000) ? (absValue / 10000000).toFixed(0) : (absValue / 10000000).toFixed(1)}Cr`;
   } else if (absValue >= 100000) { // For lakhs (≥1L)
-    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 100000).toFixed(2)}L`;
+    formattedValue = `${value<0 ? "-" : ""}₹${Number.isInteger(absValue / 100000) ? (absValue / 100000).toFixed(0) : (absValue / 100000).toFixed(1)}L`;
   } else if (absValue >= 1000) { // For thousands (≥1K)
-    formattedValue = `${value<0 ? "-" : ""}₹${(absValue / 1000).toFixed(2)}K`;
+    formattedValue = `${value<0 ? "-" : ""}₹${Number.isInteger(absValue / 1000) ? (absValue / 1000).toFixed(0) : (absValue / 1000).toFixed(1)}K`;
   } else { // For values less than 1000
-    formattedValue = `${value<0 ? "-" : ""}₹${absValue.toFixed(2)}`;
+    formattedValue = `${value<0 ? "-" : ""}₹${Number.isInteger(absValue) ? absValue.toFixed(0) : absValue.toFixed(1)}`;
   }
 
   return formattedValue;

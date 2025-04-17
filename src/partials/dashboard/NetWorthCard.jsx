@@ -14,25 +14,16 @@ function DashboardCard01() {
   const [totalInvestmentValue, setTotalInvestmentValue] = useState(0);
   const { getTotalInvestmentAmount, getTotalInvestmentValue, getMonthlyTotalInvestmentAmount, getMonthlyTotalInvestmentValue, startDate, activeDay } = useStore();
   const [chartData, setChartData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
-    const fetchTotalInvestmentAmount = async () => {
-      const amount = await getTotalInvestmentAmount(startDate, activeDay);
-      console.log("Total Investment Amount", amount);
-      setTotalInvestmentAmount(amount);
-    };
-    fetchTotalInvestmentAmount();
-    // setTotalInvestmentAmount(234525);
-
-    const fetchTotalInvestmentValue = async () => {
-      const value = await getTotalInvestmentValue(startDate, activeDay);
-      console.log("Total Investment Value", value);
-      setTotalInvestmentValue(value);
-    };
-    fetchTotalInvestmentValue();
 
     const populateChartData = async () => {
-      const [monthlyInvestmentAmounts, monthlyInvestmentValues] = await Promise.all([getMonthlyTotalInvestmentAmount('2015-01-01', new Date()), getMonthlyTotalInvestmentValue('2015-01-01', new Date())]);
+      setIsLoading(true);
+      const [monthlyInvestmentAmounts, monthlyInvestmentValues, amount, value] = await Promise.all([getMonthlyTotalInvestmentAmount(startDate, activeDay), getMonthlyTotalInvestmentValue(startDate, activeDay), getTotalInvestmentAmount(startDate, activeDay), getTotalInvestmentValue(startDate, activeDay)]);
+      setTotalInvestmentAmount(amount);
+      setTotalInvestmentValue(value);
       // console.log("monthlyInvestmentAmounts", monthlyInvestmentAmounts);
       // console.log("monthlyInvestmentValues", monthlyInvestmentValues);
 
@@ -68,12 +59,12 @@ function DashboardCard01() {
             data: Object.values(monthlyInvestmentAmounts),
             // data: [532, 532, 532, 404, 404, 314, 314, 314, 314, 314, 234, 314, 234, 234, 314, 314, 314, 388, 314, 202, 202, 202, 202, 314, 720, 642],
             // borderColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
-            borderColor: getCssVariable('--color-sky-500'),
+            borderColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 3,
-            pointBackgroundColor: adjustColorOpacity(getCssVariable('--color-sky-500'), 0.25),
-            pointHoverBackgroundColor: adjustColorOpacity(getCssVariable('--color-sky-500'), 0.25),
+            pointBackgroundColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
+            pointHoverBackgroundColor: adjustColorOpacity(getCssVariable('--color-gray-500'), 0.25),
             pointBorderWidth: 0,
             pointHoverBorderWidth: 0,
             clip: 20,
@@ -83,34 +74,22 @@ function DashboardCard01() {
       };
       // console.log("chartData", chartData);
       setChartData(chartData);
+      setIsLoading(false);
     };
     populateChartData();
 
   }, [startDate, activeDay]);
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-10 xl:col-span-10 bg-white dark:bg-gray-800 h-[16rem] shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
-      <div className="px-5 pt-5">
-        <header className="flex justify-between items-start mb-2">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Net Worth</h2>
-          {/* Menu button */}
-          {/* <EditMenu align="right" className="relative inline-flex">
-            <li>
-              <Link className="font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 flex py-1 px-3" to="#0">
-                Option 1
-              </Link>
-            </li>
-            <li>
-              <Link className="font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 flex py-1 px-3" to="#0">
-                Option 2
-              </Link>
-            </li>
-            <li>
-              <Link className="font-medium text-sm text-red-500 hover:text-red-600 flex py-1 px-3" to="#0">
-                Remove
-              </Link>
-            </li>
-          </EditMenu> */}
+    <div className="flex flex-col col-span-full sm:col-span-10 xl:col-span-10 bg-white dark:bg-gray-800 h-[18rem] shadow-xs rounded-xl transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (<>
+        <div className="px-5 pt-5">
+          <header className="flex justify-between items-start mb-2">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Net Worth</h2>
         </header>
         <div className="flex justify-between items-start">
           <div>
@@ -129,11 +108,10 @@ function DashboardCard01() {
           </div>
         </div>
       </div>
-      {/* Chart built with Chart.js 3 */}
-      {chartData && <div className="grow max-sm:max-h-[128px] xl:max-h-[128px]">
-        {/* Change the height attribute to adjust the chart height */}
+      
+      <div className="grow max-sm:max-h-[150px] xl:max-h-[150px]">
         <LineChart data={chartData} width={389} height={128} />
-      </div>}
+      </div></>)}
     </div>
   );
 }

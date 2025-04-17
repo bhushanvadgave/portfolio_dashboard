@@ -115,8 +115,8 @@
             "asset_type":"gold",
             "iconImage":"/assets/icons/sgb.png"
         },
-        "pune_commercial_space":{
-            "name":"Pune Commercial Space",
+        "reit":{
+            "name":"Real Estate Investment Trusts",
             "asset_type":"real_estate",
             "iconImage":"/assets/icons/pune_commercial_space.png"
         }
