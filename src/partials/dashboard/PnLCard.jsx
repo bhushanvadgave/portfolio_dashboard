@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LineChart from '../../charts/LineChartDecimal';
 import { chartAreaGradient } from '../../charts/ChartjsConfig';
-import EditMenu from '../../components/DropdownEditMenu';
 import useStore from '../../store';
 // Import utilities
 import { adjustColorOpacity, getCssVariable } from '../../utils/Utils';
